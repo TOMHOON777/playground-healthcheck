@@ -27,7 +27,7 @@ public class HealthbotApplication {
 		private final String webhookUrl = "https://discord.com/api/webhooks/1423831190523215924/xIkTQCp1HXinIvQgVOZ4Yr_hVsFwpTAb-7GNr28Rm21zgCptJyJijm5Hfktrlw8E_Dqv";
 
 		// the site you want to monitor
-		private final String targetUrl = "https://your-server.com/health";
+		private final String targetUrl = "http://tomhoon.my:780";
 
 		@Scheduled(fixedRate = 3600000)
 		public void checkHealthAndNotify() {
