@@ -2,6 +2,9 @@
 
 set -e;
 
+echo "🥗 source pulling..."
+git pull
+
 echo "🥗 Start Build"
 ./gradlew build -x test | true
 
