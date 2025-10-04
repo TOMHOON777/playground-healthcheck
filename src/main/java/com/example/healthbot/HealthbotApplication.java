@@ -1,5 +1,8 @@
 package com.example.healthbot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpEntity;
@@ -46,9 +49,11 @@ public class HealthbotApplication {
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
 
-				String payload = "{ \"content\": \"" + message.replace("\"", "\\\"") + "\" }";
+				// Use a Map instead of manual string
+				Map<String, String> payload = new HashMap<>();
+				payload.put("content", message);
 
-				HttpEntity<String> request = new HttpEntity<>(payload, headers);
+				HttpEntity<Map<String, String>> request = new HttpEntity<>(payload, headers);
 				String response = restTemplate.postForObject(webhookUrl, request, String.class);
 				System.out.println("Webhook response: " + response);
 			} catch (Exception e) {
