@@ -1,6 +1,8 @@
 package com.example.healthbot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
@@ -27,24 +29,40 @@ public class HealthbotApplication {
 		private final RestTemplate restTemplate = new RestTemplate();
 
 		// your Discord webhook URL
-		private final String webhookUrl = "https://discord.com/api/webhooks/1423831190523215924/xIkTQCp1HXinIvQgVOZ4Yr_hVsFwpTAb-7GNr28Rm21zgCptJyJijm5Hfktrlw8E_Dqv";
+		private final String ateam_webhookUrl = "https://discord.com/api/webhooks/1424183798739894324/NLQuobDOnL4CM0jHqXyxDjS2POsYhYaZ7bUyzsuy28HCmtcbQk590_0iMUffDCwifNV1";
+		private final String bteam_webhookUrl = "https://discord.com/api/webhooks/1423831190523215924/xIkTQCp1HXinIvQgVOZ4Yr_hVsFwpTAb-7GNr28Rm21zgCptJyJijm5Hfktrlw8E_Dqv";
 
 		// the site you want to monitor
-		private final String targetUrl = "http://tomhoon.my:780";
+		private final String ateam_targetUrl = "http://49.247.160.225";
+		private final String bteam_targetUrl = "http://tomhoon.my:780";
 
 		@Scheduled(fixedRate = 3600000)
 		public void checkHealthAndNotify() {
-			try {
-				// try to GET the target site
-				restTemplate.getForObject(targetUrl, String.class);
-				System.out.println("✅ Target is OK: " + targetUrl);
-			} catch (RestClientException e) {
-				// if failed to connect, send webhook
-				sendWebhook("🚨 ALERT: 서버 응답없음! 확인 필요!\n```\n" + e.getMessage() + "\n```");
-			}
+			List<HashMap> hooks = new ArrayList();
+			HashMap<String, String> ateam = new HashMap<>();
+			HashMap<String, String> bteam = new HashMap<>();
+			ateam.put("webhookUrl", ateam_webhookUrl);
+			ateam.put("targetUrl", ateam_targetUrl);
+
+			bteam.put("webhookUrl", bteam_webhookUrl);
+			bteam.put("targetUrl", bteam_targetUrl);
+
+			hooks.add(ateam);
+			hooks.add(bteam);
+
+			hooks.forEach(item -> {
+				try {
+					// try to GET the target site
+					restTemplate.getForObject((String)item.get("targetUrl"), String.class);
+					System.out.println("✅ Target is OK: " + item.get("targetUrl"));
+				} catch (RestClientException e) {
+					// if failed to connect, send webhook
+					sendWebhook("🚨 ALERT: 서버 응답없음! 확인 필요!\n```\n" + e.getMessage() + "\n```", (String)item.get("webhookUrl"));
+				}
+			});
 		}
 
-		private void sendWebhook(String message) {
+		private void sendWebhook(String message, String url) {
 			try {
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
@@ -54,7 +72,7 @@ public class HealthbotApplication {
 				payload.put("content", message);
 
 				HttpEntity<Map<String, String>> request = new HttpEntity<>(payload, headers);
-				String response = restTemplate.postForObject(webhookUrl, request, String.class);
+				String response = restTemplate.postForObject(url, request, String.class);
 				System.out.println("Webhook response: " + response);
 			} catch (Exception e) {
 				e.printStackTrace();
