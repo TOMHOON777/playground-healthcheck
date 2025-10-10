@@ -30,25 +30,33 @@ public class HealthbotApplication {
 
 		// your Discord webhook URL
 		private final String ateam_webhookUrl = "https://discord.com/api/webhooks/1424183798739894324/NLQuobDOnL4CM0jHqXyxDjS2POsYhYaZ7bUyzsuy28HCmtcbQk590_0iMUffDCwifNV1";
-		private final String bteam_webhookUrl = "https://discord.com/api/webhooks/1423831190523215924/xIkTQCp1HXinIvQgVOZ4Yr_hVsFwpTAb-7GNr28Rm21zgCptJyJijm5Hfktrlw8E_Dqv";
+		private final String bteam_webhookUrl = "https://discord.com/api/webhooks/1426110453461028905/2MqDSSJfbijYEzYbWjnL2lrjzWewRzHdYedUa_GYUQr_5MNI8JFuJf7EcUIJe4AJwqqx";
+		private final String cteam_webhookUrl = "https://discord.com/api/webhooks/1426109571390378084/QuOv0ToM7OASKbLfzJWTodUVFX_cZcv8fSOJsdJISSRmrCEnlHyc86OI92m3-Tt1wq3d";
 
 		// the site you want to monitor
 		private final String ateam_targetUrl = "http://49.247.160.225";
 		private final String bteam_targetUrl = "http://tomhoon.my:780";
+		private final String cteam_targetUrl = "http://mjc813c.softagape.com";
 
 		@Scheduled(fixedRate = 3600000)
 		public void checkHealthAndNotify() {
 			List<HashMap> hooks = new ArrayList();
 			HashMap<String, String> ateam = new HashMap<>();
 			HashMap<String, String> bteam = new HashMap<>();
+			HashMap<String, String> cteam = new HashMap<>();
+
 			ateam.put("webhookUrl", ateam_webhookUrl);
 			ateam.put("targetUrl", ateam_targetUrl);
 
 			bteam.put("webhookUrl", bteam_webhookUrl);
 			bteam.put("targetUrl", bteam_targetUrl);
 
+			cteam.put("webhookUrl", cteam_webhookUrl);
+			cteam.put("targetUrl", cteam_targetUrl);
+
 			hooks.add(ateam);
 			hooks.add(bteam);
+			hooks.add(cteam);
 
 			hooks.forEach(item -> {
 				try {
